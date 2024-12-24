@@ -331,7 +331,7 @@ export default function Portfolio() {
                     </motion.div>
                     <motion.div variants={fadeIn}>
                       <Button variant="outline" className="w-full justify-start hover:scale-105 transition-transform hover:bg-primary hover:text-primary-foreground" asChild>
-                        <Link href="https://linkedin.com" target="_blank">
+                        <Link href="https://in.linkedin.com/in/bhavin-kumar-218a11302" target="_blank">
                           <Linkedin className="mr-2 h-4 w-4" />
                           LinkedIn
                         </Link>
@@ -339,7 +339,7 @@ export default function Portfolio() {
                     </motion.div>
                     <motion.div variants={fadeIn}>
                       <Button variant="outline" className="w-full justify-start hover:scale-105 transition-transform hover:bg-primary hover:text-primary-foreground" asChild>
-                        <Link href="mailto:contact@example.com">
+                        <Link href="mailto:kumarbhavin08@gmail.com">
                           <Mail className="mr-2 h-4 w-4" />
                           Email
                         </Link>
