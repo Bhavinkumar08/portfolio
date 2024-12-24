@@ -137,12 +137,12 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
 
       function changeColors() {
         if (theme === 'dark') {
-          c1 = '#000000';
-          c2 = '#ffff';
+          c1 = '#1a1a1a';
+          c2 = '#e5e5e5';
           p.background(0); // Set black background for dark theme
         } else {
-          c1 = '#fff';
-          c2 = '#000';
+          c1 = '#e5e5e5';
+          c2 = '#1a1a1a';
           p.background(255); // Set white background for light theme
         }
       }
