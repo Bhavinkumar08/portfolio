@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import p5 from 'p5';
+import { useTheme } from 'next-themes';
 
 interface P5AnimationProps {
   changeAnimation: number;
@@ -11,6 +12,7 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
   const paramsRef = useRef({
     lx: 9, ly: 9, coef: 14, divAngle: 5, nbP: 50, a1: 10, a2: 7,
   });
+  const { theme } = useTheme();
 
   const changeConfig = () => {
     if (p5InstanceRef.current) {
@@ -134,13 +136,14 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
       };
 
       function changeColors() {
-        const theme = localStorage.getItem('theme');
         if (theme === 'dark') {
-          c1 = '#1a1a1a';
-          c2 = '#e5e5e5';
+          c1 = '#000000';
+          c2 = '#ffff';
+          p.background(0); // Set black background for dark theme
         } else {
-          c1 = '#e5e5e5';
-          c2 = '#1a1a1a';
+          c1 = '#fff';
+          c2 = '#000';
+          p.background(255); // Set white background for light theme
         }
       }
     };
@@ -151,7 +154,7 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
     return () => {
       p5Instance.remove();
     };
-  }, []);
+  }, [theme]);
 
   useEffect(() => {
     changeConfig();
