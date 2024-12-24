@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 import { useTheme } from 'next-themes';
 
@@ -9,10 +9,22 @@ interface P5AnimationProps {
 const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
   const sketchRef = useRef<HTMLDivElement>(null);
   const p5InstanceRef = useRef<p5 | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const paramsRef = useRef({
     lx: 9, ly: 9, coef: 14, divAngle: 5, nbP: 50, a1: 10, a2: 7,
   });
   const { theme } = useTheme();
+  const colorsRef = useRef({ c1: '', c2: '' });
+
+  const updateColors = () => {
+    if (!p5InstanceRef.current || !isInitialized) return;
+    
+    if (theme === 'dark') {
+      colorsRef.current = { c1: '#1a1a1a', c2: '#e5e5e5' };
+    } else {
+      colorsRef.current = { c1: '#e5e5e5', c2: '#1a1a1a' };
+    }
+  };
 
   const changeConfig = () => {
     if (p5InstanceRef.current) {
@@ -30,12 +42,11 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
   };
 
   useEffect(() => {
-    if (!sketchRef.current) return;
+    if (!sketchRef.current || isInitialized) return;
 
     const sketch = (p: p5) => {
       const nbFrames = 30;
       const easing = 0.05;
-      let c1 = '', c2 = '';
 
       const data = [
         { lx: 9, ly: 8, coef: 13, divAngle: 7, nbP: 40, a1: 5, a2: 9 },
@@ -73,10 +84,10 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
       assignTabData(data, paramsRef.current);
 
       p.setup = () => {
-        changeColors();
         p.setAttributes('antialias', true);
         p.createCanvas(p.displayWidth, p.displayHeight, p.WEBGL);
         p.windowResized();
+        setIsInitialized(true);
       };
 
       p.draw = () => {
@@ -87,8 +98,8 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
         currentCoef += (paramsRef.current.coef - currentCoef) * easing;
         currentDivAngle += (paramsRef.current.divAngle - currentDivAngle) * easing;
 
-        const colFond = p.color(c1);
-        const colObjt = p.color(c2);
+        const colFond = p.color(colorsRef.current.c1 || '#e5e5e5');
+        const colObjt = p.color(colorsRef.current.c2 || '#1a1a1a');
 
         p.noStroke();
         p.rectMode(p.CENTER);
@@ -122,7 +133,6 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
         p.resizeCanvas(window.innerWidth, window.innerHeight);
         xrad = (window.innerWidth < 400) ? 50 : 100;
         yrad = (window.innerWidth < 400) ? 50 : 100;
-        changeColors();
       };
 
       p.keyPressed = () => {
@@ -134,18 +144,6 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
           }
         }
       };
-
-      function changeColors() {
-        if (theme === 'dark') {
-          c1 = '#1a1a1a';
-          c2 = '#e5e5e5';
-          p.background(0); // Set black background for dark theme
-        } else {
-          c1 = '#e5e5e5';
-          c2 = '#1a1a1a';
-          p.background(255); // Set white background for light theme
-        }
-      }
     };
 
     const p5Instance = new p5(sketch, sketchRef.current);
@@ -153,8 +151,14 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
 
     return () => {
       p5Instance.remove();
+      setIsInitialized(false);
     };
-  }, [theme]);
+  }, []); // Remove theme dependency
+
+  // Separate effect for theme changes
+  useEffect(() => {
+    updateColors();
+  }, [theme, isInitialized]);
 
   useEffect(() => {
     changeConfig();
