@@ -20,9 +20,9 @@ const P5Animation: React.FC<P5AnimationProps> = ({ changeAnimation }) => {
     if (!p5InstanceRef.current || !isInitialized) return;
     
     if (theme === 'dark') {
-      colorsRef.current = { c1: '#1a1a1a', c2: '#e5e5e5' };
+      colorsRef.current = { c1: '#0c0a09', c2: '#fff' };
     } else {
-      colorsRef.current = { c1: '#e5e5e5', c2: '#1a1a1a' };
+      colorsRef.current = { c1: '#fff', c2: '#0c0a09' };
     }
   };
 
